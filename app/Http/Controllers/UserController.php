@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
 
-        $users = User::paginate(10);
+        $users = DB::table('users')->when($request->keyword, function ($query) use ($request) {
+            $query->where('name', 'like', "%{$request->keyword}%")
+                ->orWhere('email', 'like', "%{$request->keyword}%")
+                ->orWhere('email', 'like', "%{$request->keyword}%");
+        })->orderBy('id', 'desc')->paginate(10);
         return view('pages.users.index', compact('users'));
     }
 
@@ -33,5 +40,32 @@ class UserController extends Controller
         User::create($request->all());
 
         return redirect()->route('users.index')->with('success', 'User Created Successuflly');
+    }
+
+    public function edit(User $user)
+    {
+        return view('pages.users.edit', compact('user'));
+    }
+
+    public function udpate(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'required|string',
+            'phone' => 'required',
+            'role' => 'required'
+        ]);
+
+        // check if password is not empty
+        if ($request->password) {
+            $request->update([
+                'password' => Hash::make($request->password)
+            ]);
+        }
+
+        $user->update($request->all());
+
+        return redirect()->route('users.index')->with('success', 'User Updated Successuflly');
     }
 }
