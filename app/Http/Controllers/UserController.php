@@ -47,24 +47,30 @@ class UserController extends Controller
         return view('pages.users.edit', compact('user'));
     }
 
-    public function udpate(Request $request, User $user)
+    public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'required|string',
-            'phone' => 'required',
-            'role' => 'required'
-        ]);
+
+
+        // wrong way to do mass update
+        // $user->update($request->all());
+        $input = $request->all();
+        $user->fill($input)->save();
+
 
         // check if password is not empty
         if ($request->password) {
-            $request->update([
+            $user->update([
                 'password' => Hash::make($request->password)
             ]);
         }
 
-        $user->update($request->all());
+        // check if phone is not empty
+        if ($request->phone) {
+            $user->update([
+                'phone' => $request->phone
+            ]);
+        }
+
 
         return redirect()->route('users.index')->with('success', 'User Updated Successuflly');
     }
