@@ -53,7 +53,9 @@ class UserController extends Controller
 
         // wrong way to do mass update
         // $user->update($request->all());
-        $input = $request->all();
+
+
+        $input = $request->except(['password', 'phone']);
         $user->fill($input)->save();
 
 
@@ -73,5 +75,11 @@ class UserController extends Controller
 
 
         return redirect()->route('users.index')->with('success', 'User Updated Successuflly');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'User Deleted Successfully');
     }
 }
