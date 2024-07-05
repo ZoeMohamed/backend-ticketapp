@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->enum('status', ['draft', 'published', 'archived'])->default('published');
             $table->enum('criteria', ['perorangan', 'rombongan'])->default('perorangan');
-            $table->boolean('favorites')->default(false);
+            $table->boolean('favorite')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

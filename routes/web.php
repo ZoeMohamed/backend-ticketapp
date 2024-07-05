@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('users', UserController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('products', ProductController::class);
 });
 // Route::get('/login', function () {
 //     return view('pages.auth.login');
