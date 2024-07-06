@@ -50,17 +50,9 @@ class ProductController extends Controller
         // 'status',
         // 'stock',
 
-        $product = new Product;
-        $product->category_id = $request->category_id;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-
-        $product->criteria = $request->criteria;
-        $product->favorite = $request->favorite;
-        $product->status = $request->status;
-        $product->stock = $request->stock;
-        $product->save();
+        $product = new Product();
+        $input = $request->except(['image']);
+        $product->fill($input)->save();
 
         //image
         $image = $request->file('image');
@@ -82,15 +74,9 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
 
-        $product->category_id = $request->category_id;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->criteria = $request->criteria;
-        $product->favorite = $request->favorite;
-        $product->status = $request->status;
-        $product->stock = $request->stock;
-        $product->save();
+
+        $input = $request->except(['image']);
+        $product->fill($input)->save();
 
         //check if image is not empty
         if ($request->image) {
